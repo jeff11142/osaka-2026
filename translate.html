@@ -1,0 +1,403 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>中↔日 翻譯・常用語手冊</title>
+<style>
+:root{
+  --bg:#fbf5ea; --ink:#3b2e28; --muted:#8c7c70;
+  --primary:#e0603a; --primary-d:#c74a2b; --accent:#e8a53a; --teal:#2f8f7f; --teal-d:#237567;
+  --card:#fff; --line:#ece0cf; --r:22px; --r-lg:30px; --pill:999px;
+  --sh-1:0 6px 18px rgba(90,60,40,.10); --sh-2:0 16px 40px rgba(90,60,40,.20);
+  --ease-bounce:cubic-bezier(.34,1.56,.64,1);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:system-ui,-apple-system,"Hiragino Sans","PingFang TC","Noto Sans TC","Microsoft JhengHei",sans-serif;
+  background:var(--bg);color:var(--ink);line-height:1.7;-webkit-font-smoothing:antialiased}
+.wrap{max-width:820px;margin:0 auto;padding:0 18px}
+/* 頂列 */
+.topbar{position:sticky;top:0;z-index:30;background:rgba(251,245,234,.9);backdrop-filter:blur(10px);
+  border-bottom:1px solid var(--line)}
+.topbar-in{max-width:820px;margin:0 auto;padding:12px 18px;display:flex;align-items:center;gap:12px}
+.back{text-decoration:none;color:var(--ink);font-weight:800;font-size:14px;background:#fff;border:1px solid var(--line);
+  border-radius:var(--pill);padding:8px 15px;transition:transform .25s var(--ease-bounce),box-shadow .25s}
+.back:hover{transform:scale(1.05);box-shadow:var(--sh-1)}
+body.embed .topbar{display:none}
+.tt{font-weight:800;font-size:17px}
+h2{font-size:22px;margin-bottom:4px}
+.sec-tag{display:inline-block;font-size:12px;font-weight:800;color:var(--primary);background:#fbe6dd;
+  padding:4px 12px;border-radius:var(--pill);margin-bottom:10px}
+section{padding:26px 0}
+section.sep{border-top:1px solid var(--line);margin-top:10px;padding-top:36px}
+section.topsec{padding-top:34px}
+.hint{font-size:12.5px;color:var(--muted);margin-top:4px}
+
+/* 線上翻譯框 */
+.tbox{background:var(--card);border:1px solid var(--line);border-radius:var(--r-lg);box-shadow:var(--sh-1);
+  padding:20px;margin-top:14px}
+.dir{display:flex;gap:8px;margin-bottom:12px}
+.dir button{flex:1;border:2px solid var(--line);background:#fff;font:inherit;font-weight:800;font-size:14px;
+  padding:10px;border-radius:var(--pill);cursor:pointer;color:var(--muted);
+  transition:transform .25s var(--ease-bounce),background .25s,color .25s,border-color .25s}
+.dir button:active{transform:scale(.94)}
+.dir button.on{background:var(--teal);border-color:var(--teal);color:#fff}
+textarea{width:100%;min-height:90px;border:1px solid var(--line);border-radius:var(--r);padding:14px;
+  font:inherit;font-size:16px;resize:vertical;background:#fffdf9}
+textarea:focus{outline:2px solid var(--accent);border-color:var(--accent)}
+.input-wrap{position:relative}
+.mic{position:absolute;top:10px;right:10px;border:none;background:#eef7f4;color:var(--teal-d);
+  width:42px;height:42px;border-radius:50%;font-size:19px;cursor:pointer;display:flex;align-items:center;justify-content:center;
+  transition:transform .2s var(--ease-bounce),background .2s}
+.mic:hover{transform:scale(1.1)}
+.mic:active{transform:scale(.9)}
+.mic.rec{background:var(--primary);color:#fff;animation:pulse 1s infinite}
+.mic.off{display:none}
+@keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(224,96,58,.5)}50%{box-shadow:0 0 0 9px rgba(224,96,58,0)}}
+.trow{display:flex;gap:10px;margin-top:12px;flex-wrap:wrap}
+.btn{border:none;font:inherit;font-weight:800;cursor:pointer;border-radius:var(--pill);padding:13px 22px;font-size:15px;
+  color:#fff;background:linear-gradient(135deg,var(--primary),var(--accent));box-shadow:var(--sh-1);
+  transition:transform .3s var(--ease-bounce),box-shadow .3s}
+.btn:hover{transform:scale(1.05)}.btn:active{transform:scale(.93)}
+.btn.ghost{background:#fff;color:var(--teal-d);border:1px solid #c9e8e0;box-shadow:none}
+.result{margin-top:14px;background:#f2faf7;border:1px solid #cfe9e1;border-radius:var(--r);padding:16px;
+  min-height:56px;font-size:19px;font-weight:700;white-space:pre-wrap;word-break:break-word}
+.result.empty{color:var(--muted);font-weight:400;font-size:14px}
+.result .ro{display:block;font-size:13px;color:var(--muted);font-weight:600;margin-top:6px}
+
+/* 搜尋 */
+.search{width:100%;border:1px solid var(--line);border-radius:var(--pill);padding:13px 18px;font:inherit;font-size:15px;
+  background:#fff;margin-top:12px}
+.search:focus{outline:2px solid var(--accent);border-color:var(--accent)}
+
+/* 分類與句子 */
+.cat{margin-top:22px}
+.cat h3{font-size:16px;margin-bottom:10px;display:flex;align-items:center;gap:8px}
+.phrase{background:var(--card);border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--sh-1);
+  padding:14px 16px;margin-bottom:10px;cursor:pointer;position:relative;
+  transition:transform .3s var(--ease-bounce),box-shadow .3s}
+.phrase:hover{transform:translateY(-3px);box-shadow:var(--sh-2)}
+.phrase:active{transform:scale(.99)}
+.phrase .zh{font-size:14px;color:var(--muted);font-weight:700}
+.phrase .ja{font-size:20px;font-weight:800;margin-top:3px}
+.phrase .ro{font-size:12.5px;color:var(--teal-d);font-weight:600;margin-top:2px}
+.phrase{padding-right:64px}
+.phrase .actions{position:absolute;top:10px;right:12px;display:flex;gap:6px;align-items:center}
+.phrase .zoom{font-size:15px;opacity:.45}
+.phrase .spk{border:none;background:#eef7f4;color:var(--teal-d);border-radius:var(--pill);
+  width:32px;height:32px;font-size:15px;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;
+  transition:transform .2s var(--ease-bounce),background .2s}
+.phrase .spk:hover{transform:scale(1.12);background:#d5efe8}
+.phrase .spk:active{transform:scale(.88)}
+.ovspk{margin-top:26px;border:none;background:var(--teal);color:#fff;font:inherit;font-weight:800;font-size:18px;
+  border-radius:var(--pill);padding:12px 28px;cursor:pointer;transition:transform .25s var(--ease-bounce)}
+.ovspk:active{transform:scale(.92)}
+.nores{color:var(--muted);font-size:14px;padding:10px}
+
+/* 放大給店員看 */
+.overlay{position:fixed;inset:0;z-index:100;background:rgba(30,24,20,.85);display:none;
+  flex-direction:column;align-items:center;justify-content:center;padding:24px;text-align:center;cursor:pointer}
+.overlay.show{display:flex}
+.overlay .ozh{color:#f0d9c8;font-size:18px;font-weight:700;margin-bottom:18px}
+.overlay .oja{color:#fff;font-size:clamp(34px,9vw,64px);font-weight:900;line-height:1.25}
+.overlay .oro{color:#e0b98a;font-size:clamp(15px,3.5vw,22px);font-weight:600;margin-top:16px}
+.overlay .tip{color:#b9a99b;font-size:13px;margin-top:34px}
+footer{text-align:center;padding:36px 18px 60px;color:var(--muted);font-size:12px}
+</style>
+</head>
+<body>
+
+<!-- 線上翻譯框 -->
+<section class="wrap topsec">
+  <span class="sec-tag">ONLINE・需連網</span>
+  <h2>翻譯任意文字</h2>
+  <p class="hint">有 wifi／網路時可翻譯任何句子；沒網路時請用下方「離線常用語手冊」。</p>
+  <div class="tbox">
+    <div class="dir" id="dir">
+      <button data-dir="zh2ja" class="on">中文 → 日文</button>
+      <button data-dir="ja2zh">日文 → 中文</button>
+    </div>
+    <div class="input-wrap">
+      <textarea id="input" placeholder="在這裡輸入要翻譯的文字…"></textarea>
+      <button class="mic" id="micBtn" title="語音輸入（依翻譯方向自動選語言）">🎤</button>
+    </div>
+    <div class="trow">
+      <button class="btn" id="goBtn">翻譯</button>
+      <button class="btn ghost" id="spkBtn">🔊 播放結果</button>
+      <button class="btn ghost" id="gBtn">🌐 用 Google 翻譯開啟</button>
+    </div>
+    <div class="result empty" id="result">翻譯結果會顯示在這裡</div>
+  </div>
+
+  <div class="tbox" style="margin-top:14px">
+    <div style="font-weight:800;font-size:16px">📷 拍照翻譯圖片上的日文</div>
+    <p class="hint">看不懂招牌、菜單？拍下來或上傳照片，用 Google 翻譯認字翻譯。</p>
+    <div class="trow">
+      <button class="btn" id="camBtn">📷 開啟 Google 翻譯（拍照／上傳）</button>
+    </div>
+    <p class="hint">💡 <b>手機最推薦</b>：開「Google 翻譯」App → 相機，或「Google Lens」對準招牌即時翻譯；先在 App 內下載<b>日文離線包</b>，沒網路也能拍照翻譯。</p>
+  </div>
+</section>
+
+<!-- 離線常用語手冊 -->
+<section class="wrap sep">
+  <span class="sec-tag">OFFLINE・免連網</span>
+  <h2>常用語手冊</h2>
+  <p class="hint">點任一句可「放大顯示日文」給店員看 🔍　右上放大鏡即是。</p>
+  <input class="search" id="search" placeholder="🔍 搜尋（中文／日文／拼音，例如：過敏、刷卡、廁所）">
+  <div id="book"></div>
+</section>
+
+<footer>離線常用語手冊・出遊愉快 🌸<br>線上翻譯由 MyMemory／Google 翻譯提供，需連網</footer>
+
+<!-- 放大給店員看 -->
+<div class="overlay" id="overlay">
+  <div class="ozh" id="ovZh"></div>
+  <div class="oja" id="ovJa"></div>
+  <div class="oro" id="ovRo"></div>
+  <button class="ovspk" id="ovSpk">🔊 播放日文</button>
+  <div class="tip">（把螢幕轉給店員看・點空白處關閉）</div>
+</div>
+
+<script>
+if(window.self!==window.top || new URLSearchParams(location.search).has('embed')) document.body.classList.add('embed');
+/* ============ 離線常用語資料（中／日／羅馬拼音）============ */
+const book = [
+  {cat:'🙇 基本禮貌', items:[
+    ['你好','こんにちは','konnichiwa'],
+    ['謝謝','ありがとうございます','arigatō gozaimasu'],
+    ['不好意思／請問','すみません','sumimasen'],
+    ['對不起','ごめんなさい','gomennasai'],
+    ['是／好的','はい','hai'],
+    ['不是／不用了','いいえ','iie'],
+    ['麻煩你了','お願いします','onegai shimasu'],
+    ['我聽不懂日文','日本語がわかりません','nihongo ga wakarimasen'],
+    ['會說英文嗎？','英語は話せますか？','eigo wa hanasemasu ka?'],
+    ['請說慢一點','ゆっくり話してください','yukkuri hanashite kudasai'],
+  ]},
+  {cat:'🍜 餐廳・點餐', items:[
+    ['三個人','三人です','san-nin desu'],
+    ['我有訂位','予約しています','yoyaku shite imasu'],
+    ['請給我菜單','メニューをください','menyū o kudasai'],
+    ['有推薦的嗎？','おすすめは何ですか？','osusume wa nan desu ka?'],
+    ['這個多少錢？','これはいくらですか？','kore wa ikura desu ka?'],
+    ['請給我這個','これをください','kore o kudasai'],
+    ['很好吃！','おいしいです！','oishii desu!'],
+    ['麻煩結帳','お会計お願いします','okaikei onegai shimasu'],
+    ['可以刷卡嗎？','カードは使えますか？','kādo wa tsukaemasu ka?'],
+    ['只能付現嗎？','現金のみですか？','genkin nomi desu ka?'],
+    ['可以分開付嗎？','別々で払えますか？','betsubetsu de haraemasu ka?'],
+  ]},
+  {cat:'⚠️ 忌口・過敏', items:[
+    ['我對（食物）過敏','食物アレルギーがあります','shokumotsu arerugī ga arimasu'],
+    ['我不能吃生的','生ものは食べられません','namamono wa taberaremasen'],
+    ['請不要放芥末','わさび抜きでお願いします','wasabi nuki de onegai shimasu'],
+    ['請不要太辣','辛くしないでください','karaku shinaide kudasai'],
+    ['這裡面有什麼？','これには何が入っていますか？','kore ni wa nani ga haitte imasu ka?'],
+  ]},
+  {cat:'🛍️ 購物・退稅', items:[
+    ['可以退稅嗎？','免税できますか？','menzei dekimasu ka?'],
+    ['請給我收據','レシートをください','reshīto o kudasai'],
+    ['有這個尺寸嗎？','このサイズはありますか？','kono saizu wa arimasu ka?'],
+    ['可以試穿嗎？','試着できますか？','shichaku dekimasu ka?'],
+    ['我只是看看','見ているだけです','mite iru dake desu'],
+    ['請幫我裝袋','袋に入れてください','fukuro ni irete kudasai'],
+  ]},
+  {cat:'🧾 退稅櫃檯', items:[
+    ['我要辦退稅','免税手続きをお願いします','menzei tetsuzuki o onegai shimasu'],
+    ['這是我的護照','パスポートです','pasupōto desu'],
+    ['退稅櫃檯在哪裡？','免税カウンターはどこですか？','menzei kauntā wa doko desu ka?'],
+    ['這些一起退稅','これらをまとめて免税で','korera o matomete menzei de'],
+    ['多少金額才能退稅？','いくらから免税ですか？','ikura kara menzei desu ka?'],
+    ['是退現金還是刷卡折抵？','現金ですか、カード返金ですか？','genkin desu ka, kādo henkin desu ka?'],
+    ['這個免稅袋可以打開嗎？','この免税の袋は開けてもいいですか？','kono menzei no fukuro wa akete mo ii desu ka?'],
+  ]},
+  {cat:'🏪 便利商店', items:[
+    ['請幫我加熱','温めてください','atatamete kudasai'],
+    ['請給我筷子','お箸をください','ohashi o kudasai'],
+    ['請給我湯匙','スプーンをください','supūn o kudasai'],
+    ['請給我袋子','袋をください','fukuro o kudasai'],
+    ['不用袋子','袋はいりません','fukuro wa irimasen'],
+    ['冷熱請分開裝','別々の袋にしてください','betsubetsu no fukuro ni shite kudasai'],
+    ['可以用這個付款嗎？','これで払えますか？','kore de haraemasu ka?'],
+    ['廁所可以借用嗎？','トイレを借りてもいいですか？','toire o karite mo ii desu ka?'],
+    ['ATM 在哪裡？','ATMはどこですか？','ATM wa doko desu ka?'],
+  ]},
+  {cat:'💊 藥妝店', items:[
+    ['有感冒藥嗎？','風邪薬はありますか？','kaze-gusuri wa arimasu ka?'],
+    ['有止痛藥嗎？','痛み止めはありますか？','itamidome wa arimasu ka?'],
+    ['有 OK 繃嗎？','絆創膏はありますか？','bansōkō wa arimasu ka?'],
+    ['有痠痛貼布嗎？','湿布はありますか？','shippu wa arimasu ka?'],
+    ['有眼藥水嗎？','目薬はありますか？','megusuri wa arimasu ka?'],
+    ['有防曬乳嗎？','日焼け止めはありますか？','hiyakedome wa arimasu ka?'],
+    ['我想找面膜','パックを探しています','pakku o sagashite imasu'],
+    ['這個一天吃幾次？','これは一日何回飲みますか？','kore wa ichinichi nankai nomimasu ka?'],
+    ['有長輩可以吃的嗎？','高齢者向けはありますか？','kōreisha muke wa arimasu ka?'],
+    ['這個可以退稅嗎？','これは免税できますか？','kore wa menzei dekimasu ka?'],
+  ]},
+  {cat:'🚆 交通・問路', items:[
+    ['車站在哪裡？','駅はどこですか？','eki wa doko desu ka?'],
+    ['這班車到大阪嗎？','これは大阪に行きますか？','kore wa Ōsaka ni ikimasu ka?'],
+    ['廁所在哪裡？','トイレはどこですか？','toire wa doko desu ka?'],
+    ['計程車招呼站在哪？','タクシー乗り場はどこですか？','takushī noriba wa doko desu ka?'],
+    ['請帶我到這個地址','この住所までお願いします','kono jūsho made onegai shimasu'],
+    ['多少錢？（車資）','いくらですか？','ikura desu ka?'],
+  ]},
+  {cat:'🚕 計程車', items:[
+    ['請幫我叫計程車','タクシーを呼んでください','takushī o yonde kudasai'],
+    ['請到這個地址（給司機看手機）','この住所までお願いします','kono jūsho made onegai shimasu'],
+    ['請到這家飯店','このホテルまでお願いします','kono hoteru made onegai shimasu'],
+    ['請到最近的車站','一番近い駅までお願いします','ichiban chikai eki made onegai shimasu'],
+    ['到那裡大概多少錢？','そこまでだいたいいくらですか？','soko made daitai ikura desu ka?'],
+    ['大概要多久？','どのくらいかかりますか？','dono kurai kakarimasu ka?'],
+    ['請開後車廂（放行李）','トランクを開けてください','toranku o akete kudasai'],
+    ['請直走','まっすぐ行ってください','massugu itte kudasai'],
+    ['請在下一個路口右轉','次の角を右に曲がってください','tsugi no kado o migi ni magatte kudasai'],
+    ['請在下一個路口左轉','次の角を左に曲がってください','tsugi no kado o hidari ni magatte kudasai'],
+    ['請在這裡停','ここで止めてください','koko de tomete kudasai'],
+    ['這裡就可以了','ここで大丈夫です','koko de daijōbu desu'],
+    ['可以刷卡嗎？','カードは使えますか？','kādo wa tsukaemasu ka?'],
+    ['請給我收據','領収書をください','ryōshūsho o kudasai'],
+    ['可以坐幾個人？','何人乗れますか？','nan-nin noremasu ka?'],
+    ['麻煩開慢一點','ゆっくり運転してください','yukkuri unten shite kudasai'],
+  ]},
+  {cat:'🏨 住宿', items:[
+    ['我要辦入住','チェックインお願いします','chekku in onegai shimasu'],
+    ['我要退房','チェックアウトお願いします','chekku auto onegai shimasu'],
+    ['可以寄放行李嗎？','荷物を預けられますか？','nimotsu o azukeraremasu ka?'],
+    ['可以幫我叫計程車嗎？','タクシーを呼んでください','takushī o yonde kudasai'],
+  ]},
+  {cat:'🏥 身體不適・藥局', items:[
+    ['我不太舒服','気分が悪いです','kibun ga warui desu'],
+    ['我頭痛','頭が痛いです','atama ga itai desu'],
+    ['我肚子痛','お腹が痛いです','onaka ga itai desu'],
+    ['附近有藥局嗎？','近くに薬局はありますか？','chikaku ni yakkyoku wa arimasu ka?'],
+    ['有腸胃藥嗎？','胃腸薬はありますか？','ichōyaku wa arimasu ka?'],
+  ]},
+  {cat:'🛫 機場報到', items:[
+    ['這班飛機的報到櫃檯在哪？','この便のチェックインカウンターはどこですか？','kono bin no chekku-in kauntā wa doko desu ka?'],
+    ['我要報到','チェックインお願いします','chekku in onegai shimasu'],
+    ['這是護照和機票','パスポートと航空券です','pasupōto to kōkūken desu'],
+    ['這件行李要托運','この荷物を預けます','kono nimotsu o azukemasu'],
+    ['這個可以帶上飛機嗎？','これは機内に持ち込めますか？','kore wa kinai ni mochikomemasu ka?'],
+    ['行李超重了嗎？','重量オーバーですか？','jūryō ōbā desu ka?'],
+    ['我要靠窗的位子','窓側の席をお願いします','madogawa no seki o onegai shimasu'],
+    ['我要走道的位子','通路側の席をお願いします','tsūrogawa no seki o onegai shimasu'],
+    ['登機門在哪裡？','搭乗口はどこですか？','tōjōguchi wa doko desu ka?'],
+    ['保安檢查在哪裡？','保安検査場はどこですか？','hoan kensajō wa doko desu ka?'],
+  ]},
+  {cat:'🆘 緊急', items:[
+    ['請幫幫我','助けてください','tasukete kudasai'],
+    ['請叫救護車','救急車を呼んでください','kyūkyūsha o yonde kudasai'],
+    ['我迷路了','道に迷いました','michi ni mayoimashita'],
+    ['我的同伴走失了','連れとはぐれました','tsure to haguremashita'],
+  ]},
+];
+
+/* ============ 渲染手冊 ============ */
+const bookEl = document.getElementById('book');
+function render(filter=''){
+  const f = filter.trim().toLowerCase();
+  let html='', hit=0;
+  book.forEach(g=>{
+    const items = g.items.filter(it=> !f || (it[0]+it[1]+it[2]+g.cat).toLowerCase().includes(f));
+    if(!items.length) return;
+    hit += items.length;
+    html += `<div class="cat"><h3>${g.cat}</h3>` + items.map(it=>`
+      <div class="phrase" data-zh="${it[0]}" data-ja="${it[1]}" data-ro="${it[2]}">
+        <div class="actions"><button class="spk" title="播放日文發音">🔊</button><span class="zoom">🔍</span></div>
+        <div class="zh">${it[0]}</div><div class="ja">${it[1]}</div><div class="ro">${it[2]}</div>
+      </div>`).join('') + `</div>`;
+  });
+  bookEl.innerHTML = hit ? html : `<div class="nores">找不到相符的句子，換個關鍵字試試 🙂</div>`;
+}
+render();
+document.getElementById('search').addEventListener('input', e=>render(e.target.value));
+
+/* ============ 語音播放（離線・使用裝置內建語音）============ */
+function speak(text, lang){
+  try{
+    if(!('speechSynthesis' in window) || !text) return;
+    window.speechSynthesis.cancel();
+    const u=new SpeechSynthesisUtterance(text); u.lang=lang; u.rate=0.9;
+    window.speechSynthesis.speak(u);
+  }catch(e){}
+}
+
+/* ============ 放大給店員看 ＋ 手冊播放 ============ */
+const overlay=document.getElementById('overlay');
+bookEl.addEventListener('click', e=>{
+  const p=e.target.closest('.phrase'); if(!p) return;
+  if(e.target.closest('.spk')){ speak(p.dataset.ja,'ja-JP'); return; }  // 按喇叭：只播放，不放大
+  document.getElementById('ovZh').textContent=p.dataset.zh;
+  document.getElementById('ovJa').textContent=p.dataset.ja;
+  document.getElementById('ovRo').textContent=p.dataset.ro;
+  overlay.classList.add('show');
+});
+overlay.addEventListener('click',()=>overlay.classList.remove('show'));
+document.getElementById('ovSpk').addEventListener('click',e=>{
+  e.stopPropagation();  // 避免點播放就關閉放大畫面
+  speak(document.getElementById('ovJa').textContent,'ja-JP');
+});
+
+/* ============ 線上翻譯 ============ */
+let dir='zh2ja';
+document.getElementById('dir').addEventListener('click',e=>{
+  const b=e.target.closest('button'); if(!b) return;
+  dir=b.dataset.dir;
+  document.querySelectorAll('#dir button').forEach(x=>x.classList.remove('on')); b.classList.add('on');
+});
+const input=document.getElementById('input'), result=document.getElementById('result');
+let lastResult='', lastLang='ja-JP';
+function setResult(text, isEmpty=false){ result.className='result'+(isEmpty?' empty':''); result.innerHTML=text; }
+
+document.getElementById('goBtn').addEventListener('click', async ()=>{
+  const q=input.value.trim();
+  if(!q){ setResult('請先輸入文字',true); return; }
+  const pair = dir==='zh2ja' ? 'zh-CN|ja' : 'ja|zh-CN';
+  setResult('翻譯中…',true); lastResult='';
+  try{
+    const url='https://api.mymemory.translated.net/get?q='+encodeURIComponent(q)+'&langpair='+pair;
+    const r=await fetch(url); const d=await r.json();
+    const t=d && d.responseData && d.responseData.translatedText;
+    if(t){ setResult(t); lastResult=t; lastLang = dir==='zh2ja' ? 'ja-JP' : 'zh-TW'; } else { throw new Error('no result'); }
+  }catch(err){
+    setResult('⚠️ 線上翻譯失敗（可能沒有網路）。請改用上方「🌐 用 Google 翻譯開啟」，或查下方離線手冊。',true);
+  }
+});
+document.getElementById('spkBtn').addEventListener('click', ()=>{
+  if(lastResult) speak(lastResult, lastLang);
+  else setResult('請先按「翻譯」取得結果再播放',true);
+});
+
+/* ============ 語音輸入（Web Speech API・依方向自動選語言）============ */
+const micBtn=document.getElementById('micBtn');
+const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+let recog=null, listening=false;
+if(!SR){ micBtn.classList.add('off'); }   // 瀏覽器不支援就隱藏麥克風鈕
+else{
+  micBtn.addEventListener('click', ()=>{
+    if(listening){ recog && recog.stop(); return; }
+    recog=new SR();
+    recog.lang = dir==='zh2ja' ? 'zh-TW' : 'ja-JP';  // 中→日聽中文；日→中聽日文
+    recog.interimResults=false; recog.maxAlternatives=1;
+    recog.onresult=e=>{ const t=e.results[0][0].transcript; input.value=(input.value?input.value+' ':'')+t; };
+    recog.onerror=e=>{ setResult('⚠️ 語音輸入失敗（需連網＋麥克風權限）：'+e.error,true); };
+    recog.onend=()=>{ listening=false; micBtn.classList.remove('rec'); };
+    try{ recog.start(); listening=true; micBtn.classList.add('rec'); }catch(err){}
+  });
+}
+document.getElementById('camBtn').addEventListener('click', ()=>{
+  // 開 Google 翻譯影像模式（日→中），可拍照或上傳圖片
+  window.open('https://translate.google.com/?sl=ja&tl=zh-TW&op=images','_blank','noopener');
+});
+document.getElementById('gBtn').addEventListener('click', ()=>{
+  const q=input.value.trim(); if(!q){ setResult('請先輸入文字',true); return; }
+  const sl = dir==='zh2ja' ? 'zh-TW' : 'ja';
+  const tl = dir==='zh2ja' ? 'ja' : 'zh-TW';
+  const url=`https://translate.google.com/?sl=${sl}&tl=${tl}&op=translate&text=`+encodeURIComponent(q);
+  window.open(url,'_blank','noopener');
+});
+</script>
+</body>
+</html>
