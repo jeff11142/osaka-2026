@@ -1,14 +1,22 @@
-// Service Worker：讓網站可離線使用（快取行程／翻譯／搭車／背景照）
-const CACHE = 'osaka-trip-v1';
+// Service Worker：讓網站可離線使用（行程/交通/餐廳/背景照全快取）
+// 關鍵資訊都寫在各 HTML 內，離線也不會整頁失效
+const CACHE = 'osaka-trip-v2';
 const ASSETS = [
-  './', './index.html', './translate.html', './guide.html',
+  './', './index.html',
+  './day1.html', './day2.html', './day3.html',
+  './day4.html', './day5.html', './day6.html',
+  './transport.html', './food.html',
+  './assets/style.css', './assets/app.js',
   './manifest.webmanifest', './icon.svg',
   './images/day0.jpg', './images/day1.jpg', './images/day2.jpg',
   './images/day3.jpg', './images/day4.jpg', './images/day5.jpg'
 ];
 
 self.addEventListener('install', e => {
-  e.waitUntil(caches.open(CACHE).then(c => c.addAll(ASSETS)).then(() => self.skipWaiting()));
+  e.waitUntil(
+    caches.open(CACHE).then(c => Promise.allSettled(ASSETS.map(u => c.add(u))))
+      .then(() => self.skipWaiting())
+  );
 });
 
 self.addEventListener('activate', e => {
@@ -19,8 +27,9 @@ self.addEventListener('activate', e => {
 });
 
 self.addEventListener('fetch', e => {
+  if (e.request.method !== 'GET') return;
   const url = new URL(e.request.url);
-  // 外部服務（翻譯 API、Google、字型等）不攔截，直接走網路
+  // 外部連結（Google Maps、來源網站）不攔截，直接走網路
   if (url.origin !== location.origin) return;
   // 快取優先，找不到再上網；離線且未快取時退回首頁
   e.respondWith(

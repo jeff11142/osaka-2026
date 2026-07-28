@@ -1,0 +1,542 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>大阪 6 日 5 夜・慢步調長輩版行程</title>
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="theme-color" content="#e0603a">
+<link rel="icon" href="icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="icon.svg">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="大阪 6日">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<style>
+/* ============ 基礎變數 & 重置 ============ */
+:root{
+  --bg:#fbf5ea; --bg-soft:#f3ead9;
+  --ink:#3b2e28; --muted:#8c7c70;
+  --primary:#e0603a; --primary-d:#c74a2b;
+  --accent:#e8a53a; --teal:#2f8f7f; --teal-d:#237567;
+  --card:#ffffff; --line:#ece0cf;
+  --r-sm:14px; --r:22px; --r-lg:30px; --r-xl:40px; --pill:999px;
+  --sh-1:0 6px 18px rgba(90,60,40,.10);
+  --sh-2:0 16px 40px rgba(90,60,40,.20);
+  --ease-bounce:cubic-bezier(.34,1.56,.64,1);
+  --ease-out:cubic-bezier(.22,1,.36,1);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{
+  font-family:system-ui,-apple-system,"Hiragino Sans","PingFang TC","Noto Sans TC","Microsoft JhengHei",sans-serif;
+  color:var(--ink); line-height:1.7; background:transparent;
+  overflow-x:hidden; -webkit-font-smoothing:antialiased;
+}
+.wrap{max-width:960px;margin:0 auto;padding:0 20px;position:relative;z-index:1}
+h2{font-size:clamp(24px,4vw,34px);letter-spacing:.5px}
+.sec-tag{display:inline-block;font-size:13px;font-weight:700;color:var(--primary);
+  background:#fff;padding:5px 14px;border-radius:var(--pill);margin-bottom:12px;box-shadow:var(--sh-1)}
+section.block{padding:70px 0;position:relative}
+
+/* ============ 滾動過場背景（每日景點照 cross-fade）============ */
+#bg{position:fixed;inset:0;z-index:-2;background:#dfe6e2}
+.bg-layer{position:absolute;inset:0;opacity:0;transition:opacity .35s linear}
+.bg-layer::before{content:"";position:absolute;inset:0;
+  background-image:var(--img);background-size:cover;background-position:center}
+/* 每日漸層備援：即使照片沒載到也不開天窗 */
+.bg-layer.d0{background:linear-gradient(160deg,#2b2140,#6b3f5e,#c25a4a)}
+.bg-layer.d1{background:linear-gradient(160deg,#3a6b7a,#6aa1a0,#cbb583)}
+.bg-layer.d2{background:linear-gradient(160deg,#7a3b2e,#c9772f,#e6b35a)}
+.bg-layer.d3{background:linear-gradient(160deg,#b3506a,#e08a6a,#f0c98a)}
+.bg-layer.d4{background:linear-gradient(160deg,#26527a,#4f8fb8,#9fd0d6)}
+.bg-layer.d5{background:linear-gradient(160deg,#3a6ea8,#e0916a,#f4cf8a)}
+.bg-scrim{position:fixed;inset:0;z-index:-1;pointer-events:none;
+  background:linear-gradient(180deg,rgba(251,245,234,.62),rgba(251,245,234,.74))}
+
+/* ============ 頂部進度條 + 火車 scrub + 模式切換 ============ */
+.topbar{position:sticky;top:0;z-index:60;background:rgba(251,245,234,.85);
+  backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+.topbar-in{max-width:960px;margin:0 auto;padding:10px 20px;display:flex;align-items:center;gap:14px}
+.brand{font-weight:800;font-size:17px;white-space:nowrap}
+.mode-toggle{margin-left:auto;display:flex;background:var(--bg-soft);border-radius:var(--pill);padding:4px;gap:2px}
+.mode-btn{border:none;background:transparent;font:inherit;font-weight:700;font-size:13px;color:var(--muted);
+  padding:7px 14px;border-radius:var(--pill);cursor:pointer;
+  transition:transform .3s var(--ease-bounce),background .3s,color .3s}
+.mode-btn:active{transform:scale(.9)}
+.mode-btn.active{background:var(--primary);color:#fff;box-shadow:var(--sh-1)}
+.tl-link{text-decoration:none;font-weight:800;font-size:13px;color:#fff;background:var(--teal);
+  border-radius:var(--pill);padding:8px 14px;white-space:nowrap;
+  transition:transform .25s var(--ease-bounce),box-shadow .25s}
+.tl-link:hover{transform:scale(1.06);box-shadow:var(--sh-1)}
+.tl-link:active{transform:scale(.92)}
+/* 視圖切換 */
+.viewnav{margin-left:auto;display:flex;background:var(--bg-soft);border-radius:var(--pill);padding:4px;gap:2px}
+.viewnav button{border:none;background:transparent;font:inherit;font-weight:800;font-size:13px;color:var(--muted);
+  padding:8px 13px;border-radius:var(--pill);cursor:pointer;white-space:nowrap;
+  transition:transform .3s var(--ease-bounce),background .3s,color .3s}
+.viewnav button:active{transform:scale(.9)}
+.viewnav button.active{background:var(--primary);color:#fff;box-shadow:var(--sh-1)}
+.view{display:none}
+.view.active{display:block}
+.view-frame{display:block;width:100%;border:0;height:calc(100vh - 60px);height:calc(100dvh - 60px)}
+body:not([data-view="trip"]) #bg,body:not([data-view="trip"]) .bg-scrim{display:none}
+body:not([data-view="trip"]){background:var(--bg)}
+body:not([data-view="trip"]) .trip-only{display:none}
+body:not([data-view="trip"]) #train{display:none}
+.mode-row{display:flex;justify-content:flex-end;margin:6px 0 14px;position:relative;z-index:1}
+@media(max-width:600px){.brand{display:none}}
+.track{position:relative;height:3px;background:var(--line)}
+.progress{position:absolute;left:0;top:0;height:100%;width:0;
+  background:linear-gradient(90deg,var(--accent),var(--primary))}
+#train{position:absolute;top:-16px;left:0;font-size:22px;transform:translateX(-50%);
+  transition:left .1s linear;filter:drop-shadow(0 3px 4px rgba(0,0,0,.2))}
+
+/* ============ Hero ============ */
+.hero{position:relative;overflow:hidden;padding:90px 0 80px;text-align:center}
+.hero .deco{position:absolute;font-size:clamp(46px,9vw,90px);opacity:.55;pointer-events:none;user-select:none;z-index:0}
+.hero-content{position:relative;z-index:2}
+.hero h1{font-size:clamp(34px,7vw,60px);line-height:1.2;letter-spacing:1px;
+  text-shadow:0 2px 20px rgba(255,255,255,.6)}
+.hero h1 .hl{color:var(--primary)}
+.hero .dates{font-size:clamp(15px,2.6vw,19px);font-weight:800;color:var(--teal-d);margin-top:14px}
+.hero .sub{color:var(--ink);margin-top:10px;font-size:15px;font-weight:600}
+.pills{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;margin-top:22px}
+.pill-tag{background:#fff;border:1px solid var(--line);border-radius:var(--pill);
+  padding:8px 16px;font-size:13px;font-weight:700;box-shadow:var(--sh-1)}
+.cta-row{margin-top:30px}
+
+/* ============ 按鈕 ============ */
+.btn{border:none;font:inherit;font-weight:800;cursor:pointer;border-radius:var(--pill);
+  padding:15px 30px;font-size:16px;color:#fff;
+  background:linear-gradient(135deg,var(--primary),var(--accent));
+  background-size:180% 180%;background-position:0% 50%;box-shadow:var(--sh-2);
+  transition:transform .35s var(--ease-bounce),background-position .5s ease,box-shadow .35s}
+.btn:hover{transform:scale(1.07);background-position:100% 50%;box-shadow:0 20px 46px rgba(224,96,58,.4)}
+.btn:active{transform:scale(.93)}
+.cta{animation:breathe 2.8s ease-in-out infinite}
+.cta:hover{animation:none}
+@keyframes breathe{0%,100%{transform:scale(1)}50%{transform:scale(1.055)}}
+
+/* ============ 卡片 ============ */
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:18px}
+.card{background:var(--card);border-radius:var(--r-lg);padding:24px;box-shadow:var(--sh-1);
+  border:1px solid var(--line);transition:transform .4s var(--ease-out),box-shadow .4s}
+.card:hover{transform:translateY(-8px);box-shadow:var(--sh-2)}
+.card .ico{font-size:34px;display:block;margin-bottom:10px;transition:transform .4s var(--ease-bounce)}
+.card:hover .ico{transform:scale(1.18) rotate(-6deg)}
+.card h3{font-size:17px;margin-bottom:6px}
+.card p{font-size:14px;color:var(--muted)}
+.card .big{font-size:15px;font-weight:800;color:var(--ink);margin-top:4px}
+
+.tcard{background:var(--card);border-radius:var(--r-lg);overflow:hidden;box-shadow:var(--sh-1);
+  border:1px solid var(--line);transition:transform .4s var(--ease-out),box-shadow .4s}
+.tcard:hover{transform:translateY(-8px);box-shadow:var(--sh-2)}
+.tcard .stage{height:120px;display:flex;align-items:center;justify-content:center;font-size:60px;overflow:hidden;
+  background:linear-gradient(135deg,#ffe6c4,#ffd1c2)}
+.tcard .stage span{transition:transform .5s var(--ease-out)}
+.tcard:hover .stage span{transform:scale(1.22)}
+.tcard .body{padding:20px 22px}
+.tcard h3{font-size:19px;margin-bottom:6px}
+.tcard .meta{font-size:12.5px;color:var(--teal-d);font-weight:700;margin-bottom:8px}
+.tcard p{font-size:14px;color:var(--muted)}
+
+/* ============ 每日行程 ============ */
+#days{display:flex;flex-direction:column;gap:26px}
+.day{background:rgba(255,255,255,.94);border-radius:var(--r-xl);padding:26px;box-shadow:var(--sh-2);
+  border:1px solid var(--line);backdrop-filter:blur(4px)}
+.day-head{display:flex;align-items:center;gap:16px;margin-bottom:18px}
+.day-badge{flex:none;width:64px;height:64px;border-radius:20px;display:flex;flex-direction:column;
+  align-items:center;justify-content:center;font-weight:800;color:#fff;line-height:1.1;
+  background:linear-gradient(140deg,var(--teal),var(--teal-d));box-shadow:var(--sh-1)}
+.day-badge small{font-size:10px;opacity:.85;font-weight:700}
+.day-badge b{font-size:22px}
+.day-title{font-size:19px}
+.day-tag{display:inline-block;margin-top:4px;font-size:12px;font-weight:700;color:var(--primary);
+  background:#fbe6dd;padding:3px 12px;border-radius:var(--pill)}
+.timeline{list-style:none}
+.tl-row{display:flex;gap:14px;padding:12px 0;border-bottom:1px dashed var(--line)}
+.tl-row:last-child{border-bottom:none}
+.tl-time{flex:none;width:58px;font-weight:800;color:var(--teal-d);font-size:14px;padding-top:1px}
+.tl-body .tl-act{font-weight:700;font-size:15px}
+.tl-body .tl-note{font-size:13px;color:var(--muted);margin-top:2px}
+.nav{display:inline-flex;align-items:center;gap:3px;margin-top:6px;font-size:12px;font-weight:700;line-height:1.4;
+  color:var(--teal-d);background:#e8f5f1;border:1px solid #c9e8e0;border-radius:var(--pill);
+  padding:4px 11px;text-decoration:none;
+  transition:transform .25s var(--ease-bounce),background .25s,box-shadow .25s}
+.rrow .rmeta .nav{margin-top:0}
+.nav:hover{transform:scale(1.06);background:#d5efe8;box-shadow:var(--sh-1)}
+.nav:active{transform:scale(.9)}
+.timetable-note{margin-top:14px;font-size:12.5px;color:var(--muted);background:rgba(255,255,255,.9);
+  border:1px dashed var(--line);border-radius:var(--r);padding:12px 16px}
+/* 晴 / 雨 切換 */
+.plan-rain{display:none}
+body.rain .plan-sunny{display:none}
+body.rain .plan-rain{display:block}
+.plan-sunny,.plan-rain{animation:fadeSwap .45s var(--ease-out)}
+@keyframes fadeSwap{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+.rain-head{font-weight:800;color:#3f7bd8;margin-bottom:8px}
+.rain-item{list-style:none;background:#eef4ff;border:1px solid #dbe6fb;border-radius:var(--r);
+  padding:12px 16px;margin-bottom:10px;font-size:14px;font-weight:600;
+  animation:fadeSwap .5s var(--ease-out) both}
+.rain-item:nth-child(2){animation-delay:.07s}.rain-item:nth-child(3){animation-delay:.14s}
+.rain-item:nth-child(4){animation-delay:.21s}
+.rain-note{background:#eef4ff;border:1px solid #dbe6fb;border-radius:var(--r);padding:14px 16px;
+  font-size:14px;font-weight:600;color:#3f7bd8}
+
+/* ============ 名店表 ============ */
+.rlist{background:rgba(255,255,255,.94);border-radius:var(--r-lg);border:1px solid var(--line);
+  box-shadow:var(--sh-2);overflow:hidden;backdrop-filter:blur(4px)}
+.rrow{display:grid;grid-template-columns:70px 1fr;gap:6px 14px;padding:16px 20px;border-bottom:1px solid var(--line)}
+.rrow:last-child{border-bottom:none}
+.rrow .rd{font-weight:800;color:var(--primary);font-size:13px}
+.rrow .rname{font-weight:800;font-size:15px}
+.rname.rlink{color:var(--primary-d);text-decoration:none;cursor:pointer;
+  display:inline-flex;align-items:center;gap:4px;transition:color .2s,transform .2s var(--ease-bounce)}
+.rname.rlink:hover{color:var(--primary);text-decoration:underline;transform:translateX(2px)}
+.rname.rlink .arr{font-size:11px;opacity:.7}
+.rrow .rmeta{grid-column:2;display:flex;flex-wrap:wrap;align-items:center;gap:6px;margin-top:4px}
+.tagp{font-size:12px;font-weight:700;border-radius:var(--pill);padding:4px 11px;white-space:nowrap;
+  display:inline-flex;align-items:center;line-height:1.4}
+.tp-book{background:#e8f5f1;color:var(--teal-d);border:1px solid #c9e8e0}
+.tp-cash{background:#fff0e6;color:#b8531f;border:1px solid #f3d3bb}
+.tp-card{background:#eef4ff;color:#3f6fd8;border:1px solid #d3e0fb}
+.rrow .rnote{grid-column:2;font-size:13px;color:var(--muted);margin-top:2px}
+
+/* ============ 期待表單 ============ */
+.form-card{background:rgba(255,255,255,.96);border-radius:var(--r-xl);
+  padding:34px 28px;box-shadow:var(--sh-2);border:1px solid var(--line);text-align:center;backdrop-filter:blur(4px)}
+.chips{display:flex;flex-wrap:wrap;gap:12px;justify-content:center;margin:22px 0 28px}
+.chip{border:2px solid var(--line);background:#fff;border-radius:var(--pill);
+  padding:11px 20px;font:inherit;font-weight:700;font-size:14px;cursor:pointer;color:var(--ink);
+  transition:transform .3s var(--ease-bounce),background .3s,border-color .3s,color .3s}
+.chip:hover{transform:translateY(-3px) scale(1.04);border-color:var(--accent)}
+.chip:active{transform:scale(.9)}
+.chip.on{background:var(--teal);border-color:var(--teal);color:#fff;animation:pop .4s var(--ease-bounce)}
+@keyframes pop{0%{transform:scale(.85)}60%{transform:scale(1.12)}100%{transform:scale(1)}}
+.chip .tick{opacity:0;max-width:0;overflow:hidden;transition:opacity .3s,max-width .3s}
+.chip.on .tick{opacity:1;max-width:20px;margin-left:4px}
+.count{font-size:13px;color:var(--muted);min-height:20px}
+
+/* ============ 成功動畫 ============ */
+.overlay{position:fixed;inset:0;z-index:200;background:rgba(59,46,40,.5);
+  display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity .4s}
+.overlay.show{opacity:1;pointer-events:auto}
+.success{background:#fff;border-radius:var(--r-xl);padding:40px 34px;text-align:center;max-width:340px;
+  box-shadow:var(--sh-2);transform:scale(.8);transition:transform .5s var(--ease-bounce)}
+.overlay.show .success{transform:scale(1)}
+.wools{height:70px;display:flex;gap:10px;justify-content:center;align-items:flex-end;margin-bottom:12px}
+.wool{font-size:40px;animation:woolBounce 1s var(--ease-bounce) infinite}
+.wool:nth-child(2){animation-delay:.15s}.wool:nth-child(3){animation-delay:.3s}
+@keyframes woolBounce{0%,100%{transform:translateY(0) rotate(0)}
+  40%{transform:translateY(-34px) rotate(18deg)}60%{transform:translateY(-20px) rotate(-12deg)}}
+.success h3{font-size:22px;margin-bottom:8px}
+.success p{color:var(--muted);font-size:14px;margin-bottom:20px}
+
+/* ============ 進場動畫 ============ */
+.reveal{opacity:0;transform:translateY(36px);transition:opacity .75s ease,transform .75s var(--ease-out)}
+.reveal.in{opacity:1;transform:none}
+.reveal.stagger{opacity:1;transform:none;transition:none}
+.reveal.stagger > *{opacity:0;transform:translateY(26px);
+  transition:opacity .6s ease,transform .6s var(--ease-out);transition-delay:calc(var(--i,0) * .08s)}
+.reveal.stagger.in > *{opacity:1;transform:none}
+
+/* ============ 按鈕（圓角框）內文字置中 ============ */
+.btn,.cta,.mode-btn,.chip,.nav,.tagp,.pill-tag,.day-tag,.sec-tag{text-align:center}
+
+footer{text-align:center;padding:50px 20px 70px;color:var(--ink);font-size:13px;position:relative;z-index:1}
+footer .fbox{background:rgba(255,255,255,.9);display:inline-block;padding:16px 24px;border-radius:var(--r-lg);box-shadow:var(--sh-1)}
+
+@media (max-width:560px){
+  .brand{font-size:15px}.tl-time{width:50px}
+  .rrow{grid-template-columns:1fr}.rrow .rmeta,.rrow .rnote,.rrow .rname{grid-column:1}
+}
+@media (prefers-reduced-motion:reduce){
+  *{animation:none!important;scroll-behavior:auto!important}
+  .reveal,.reveal.stagger>*{opacity:1;transform:none;transition:none}
+  .bg-layer{transition:none}
+}
+</style>
+</head>
+<body>
+
+<!-- 滾動過場背景 -->
+<div id="bg">
+  <div class="bg-layer d0" style="--img:url('images/day0.jpg')"></div>
+  <div class="bg-layer d1" style="--img:url('images/day1.jpg')"></div>
+  <div class="bg-layer d2" style="--img:url('images/day2.jpg')"></div>
+  <div class="bg-layer d3" style="--img:url('images/day3.jpg')"></div>
+  <div class="bg-layer d4" style="--img:url('images/day4.jpg')"></div>
+  <div class="bg-layer d5" style="--img:url('images/day5.jpg')"></div>
+</div>
+<div class="bg-scrim"></div>
+
+<!-- 頂部 -->
+<div class="topbar">
+  <div class="topbar-in">
+    <div class="brand">🐙 大阪 6 日</div>
+    <nav class="viewnav" id="viewnav">
+      <button data-view="trip" class="active">📅 行程</button>
+      <button data-view="translate">🗣️ 翻譯</button>
+      <button data-view="guide">🚉 搭車</button>
+    </nav>
+  </div>
+  <div class="track"><span id="train">🚆</span><div class="progress" id="progress"></div></div>
+</div>
+
+<!-- ===== 行程 VIEW ===== -->
+<main class="view active" id="view-trip">
+
+<!-- Hero -->
+<header class="hero">
+  <span class="deco" data-speed="0.25" style="top:8%;left:6%">🍁</span>
+  <span class="deco" data-speed="0.5"  style="top:20%;right:8%">🦌</span>
+  <span class="deco" data-speed="0.35" style="bottom:14%;left:12%">🏯</span>
+  <span class="deco" data-speed="0.6"  style="bottom:20%;right:14%">🐙</span>
+  <div class="hero-content wrap">
+    <h1>大阪 <span class="hl">6 天 5 夜</span><br>慢步調・家族之旅</h1>
+    <div class="dates">2026 / 10 / 07 (三) — 10 / 12 (一)</div>
+    <p class="sub">帶著爸媽・美食 × 歷史文化 × 特色列車</p>
+    <div class="pills">
+      <span class="pill-tag">🐌 每天 9 點出發</span>
+      <span class="pill-tag">🍽️ 四大美食</span>
+      <span class="pill-tag">🚆 特色列車</span>
+      <span class="pill-tag">☔ 附雨天備案</span>
+    </div>
+    <div class="cta-row"><button class="btn cta" onclick="document.getElementById('itinerary').scrollIntoView()">開始看行程 ↓</button></div>
+  </div>
+</header>
+
+<!-- 每日行程 -->
+<section class="block" id="itinerary">
+  <div class="wrap">
+    <span class="sec-tag">ITINERARY</span>
+    <h2>每日行程 <span style="font-size:15px;color:var(--muted);font-weight:600">（下方 ☀️/☔ 切換晴雨玩法・每點可 📍導航・背景隨天數變化）</span></h2>
+    <div class="timetable-note">🚆 <b>交通時刻</b>：あをによし／ラピート／阪神 依現行固定班表整理（南海為 2024/12 改點；<b>10/12 為體育之日假日、採土休日班表</b>）；地鐵等高頻班次（約 3–20 分一班）標乘車時間。實際請於訂位時再確認。</div>
+    <div class="mode-row"><div class="mode-toggle" id="modeToggle">
+      <button class="mode-btn active" data-mode="sunny">☀️ 晴天</button>
+      <button class="mode-btn" data-mode="rain">☔ 雨天</button>
+    </div></div>
+    <div id="days"></div>
+  </div>
+</section>
+
+<!-- 名店訂位&付款 -->
+<section class="block">
+  <div class="wrap">
+    <span class="sec-tag">RESTAURANTS</span>
+    <h2>名店・訂位 & 付款</h2>
+    <p style="margin-top:8px;color:var(--ink);font-weight:600">👆 點<b>店名</b>可跳轉 Tabelog 查看詳情・資料為現行版，出發前再確認</p>
+    <div id="rlist" class="rlist reveal stagger" style="margin-top:20px"></div>
+    <div class="timetable-note">💴 <b>記得帶現金</b>：奧丹清水（只收現金）、金龍拉麵、黑門河豚攤、美津の（未滿 ¥3,000）、北極星。<br>🔴 <b>務必先訂位</b>：モーリヤ（神戶牛）、はり重（僅線上）、焼肉ふたご、今井（鍋物套餐前一天）。</div>
+  </div>
+</section>
+
+<footer><div class="fbox">🐙 大阪家族之旅・2026/10/07 – 10/12｜慢步調長輩版<br>行程由專屬導遊規劃・時刻與店家資訊為現行版，出發前請再確認<br><span style="font-size:11px;color:var(--muted)">背景照片來源：Wikimedia Commons（自由授權）</span></div></footer>
+
+</main>
+<!-- ===== 翻譯 VIEW ===== -->
+<div class="view" id="view-translate"><iframe class="view-frame" src="translate.html?embed=1" title="中↔日翻譯" loading="lazy"></iframe></div>
+<!-- ===== 搭車 VIEW ===== -->
+<div class="view" id="view-guide"><iframe class="view-frame" src="guide.html?embed=1" title="搭車圖解指南" loading="lazy"></iframe></div>
+
+<script>
+/* ============ 行程資料 ============ */
+const days = [
+  { id:0, emoji:'✈️', date:'10/7 (三)', title:'抵達日', tag:'搭 ラピート 進市區',
+    sunny:[
+      {t:'20:15',a:'關西機場 T1 落地',n:'入境+領行李約 30–45 分'},
+      {t:'21:00',a:'出關、辦 ICOCA（3 張）',n:'入境大廳自動售票機',nav:'関西国際空港'},
+      {t:'21:06',a:'關空 → ラピートα24号 → なんば',n:'到なんば 21:43・¥1,490／人（末班 23:00；海關慢就搭 21:35→22:12）'},
+      {t:'21:50',a:'なんば計程車 → 飯店',n:'約 5 分・¥800 上下・帶行李最省力',nav:'DEL style 大阪心斎橋'},
+      {t:'22:00',a:'飯店 Check in',n:'入住 14:00–24:00'},
+      {t:'22:20',a:'🍜 宵夜：金龍拉麵 道頓堀店',n:'走路 8 分・24 小時・拉麵¥600・現金。太累就直接睡 💤',nav:'金龍ラーメン 道頓堀店'},
+    ],
+    rain:{note:'☔ 機場→車站→飯店全室內／有遮蔽，完全不受影響。'} },
+
+  { id:1, emoji:'🏯', date:'10/8 (四)', title:'大阪城 × 黑門市場', tag:'歷史文化 + 市場',
+    sunny:[
+      {t:'9:00',a:'飯店出發 → 心齋橋站',n:'步行約 5 分',nav:'心斎橋駅'},
+      {t:'9:10',a:'長堀鶴見綠地線 心齋橋 → 森之宮',n:'直達・約 9 分・¥240・每 4–8 分一班'},
+      {t:'9:25',a:'慢走進大阪城公園',n:'園內有觀光小火車可搭，省腳力 🚃'},
+      {t:'9:45',a:'大阪城天守閣',n:'9:00–17:00（末入 16:30）・¥600・有電梯 👍',nav:'大阪城天守閣'},
+      {t:'12:00',a:'🐡 午餐：黑門市場吃到飽',n:'森之宮→堺筋本町→日本橋約 15 分。河豚在市場內攤店吃（現金）；想坐著吃選旁邊「太政 千日前本店」',nav:'黒門市場'},
+      {t:'14:30',a:'回飯店午睡',n:'日本橋→長堀橋・約 10 分'},
+      {t:'18:00',a:'🥘 晚餐：はり重 道頓堀本店（壽喜燒）',n:'百年老舖・僅線上訂位・可刷卡・週二休（今天 ✓）・走路 8 分',nav:'はり重 道頓堀'},
+      {t:'20:00',a:'道頓堀夜景散步回飯店',nav:'道頓堀'},
+    ],
+    rain:['🏛️ 大阪城改「大阪歷史博物館」(室內・鄰大阪城)','🛒 午餐直攻「黑門市場」(有頂棚)','🍽️ 晚餐はり重、道頓堀皆有頂棚'] },
+
+  { id:2, emoji:'🍵', date:'10/9 (五)', title:'京都一日', tag:'あをによし 直達',
+    sunny:[
+      {t:'8:50',a:'飯店出發 → 大阪難波站',n:'步行約 12 分。※あをによし 每日僅一班（09:10），全程唯一提早 10 分出門',nav:'大阪難波駅'},
+      {t:'9:10',a:'✨ あをによし 大阪難波 → 京都',n:'紫金觀光特急・直達約 84 分・¥2,270／人・車上限定和菓子 🍮（每週四運休，10/9 週五 ✓）'},
+      {t:'10:34',a:'抵達京都駅',n:''},
+      {t:'10:45',a:'計程車 → 清水寺（約 15 分）',n:'避開擠公車與長坡 🚕',nav:'清水寺'},
+      {t:'11:00',a:'清水寺（世界遺產・清水舞台）',n:'6:00–18:00・約 ¥500・上山一小段緩坡，之後全下坡'},
+      {t:'12:00',a:'🍲 午餐：湯豆腐「奧丹清水」',n:'1635 創業老舖・⚠️只收現金・僅電話訂位・週四休（今天 ✓）',nav:'総本家 ゆどうふ 奥丹清水'},
+      {t:'13:30',a:'三年坂・二年坂（下坡好走）',n:'石板古街・和菓子伴手禮',nav:'二年坂'},
+      {t:'14:15',a:'八坂神社（朱紅樓門・平坦）',nav:'八坂神社'},
+      {t:'14:45',a:'祇園・花見小路散策',n:'藝伎茶屋老街・平坦',nav:'祇園 花見小路'},
+      {t:'15:30',a:'🍵 抹茶下午茶「茶寮都路里」',n:'祇園名店抹茶聖代・現場排隊',nav:'茶寮都路里 祇園本店'},
+      {t:'16:40',a:'京阪 祇園四条 → 淀屋橋（特急）→ 心齋橋',n:'京阪約 48 分＋御堂筋線 2 站・共約 60 分'},
+      {t:'19:00',a:'🍲 晚餐：道頓堀 今井本店（うどんすき）',n:'老舖・京都走累吃清爽・可刷卡・週三休（今天 ✓）',nav:'道頓堀 今井本店'},
+    ],
+    rain:['☔ 清水寺本堂有頂可撐傘走','🏛️ 重點改室內「三十三間堂」(1001 尊佛像・平坦)','🍵 祇園甜點店＋八坂/花見小路快閃'] },
+
+  { id:3, emoji:'🛍️', date:'10/10 (六)', title:'慢活 + 下午購物', tag:'購物日・休息日',
+    sunny:[
+      {t:'9:00',a:'飯店附近咖啡廳悠閒早午餐',n:'南船場文青咖啡廳多・今天最放鬆 ☕'},
+      {t:'10:30',a:'（可選）空堀商店街懷舊散步',n:'在地老大阪',nav:'空堀商店街'},
+      {t:'12:00',a:'🍮 午餐：北極星 心齋橋本店',n:'蛋包飯發源店・現場抽號・現金為主',nav:'北極星 心斎橋本店'},
+      {t:'13:30',a:'🛍️ 下午購物（全程步行）',n:'心齋橋筋 → 大丸 → 道頓堀 → 美國村',nav:'心斎橋筋商店街'},
+      {t:'隨時',a:'逛累回飯店放東西再出門',n:'走路 5–8 分・機動性最高'},
+      {t:'15:00',a:'藥妝・伴手禮採買',nav:'大丸心斎橋店'},
+      {t:'18:00',a:'🔥 晚餐：焼肉ふたご 道頓堀店',n:'大阪名店・爆量和牛・17:00 開・可刷卡/QR・建議訂位',nav:'大阪焼肉ホルモン ふたご 道頓堀店'},
+    ],
+    rain:['🛍️ 幾乎不受影響！全程有頂棚／室內','🚫 跳過戶外「空堀・美國村」','✅ 直攻大丸・心齋橋筋・なんばパークス'] },
+
+  { id:4, emoji:'🥩', date:'10/11 (日)', title:'神戶一日', tag:'神戶牛 × 港灣',
+    sunny:[
+      {t:'9:00',a:'飯店出發 → 大阪難波站',n:'步行約 12 分',nav:'大阪難波駅'},
+      {t:'9:15',a:'阪神なんば線・快速急行 大阪難波 → 神戸三宮',n:'直達・約 43 分・¥410・高頻班次'},
+      {t:'10:15',a:'舊居留地散步（明治洋風建築群）',n:'平坦好走・歷史氛圍',nav:'旧居留地'},
+      {t:'10:45',a:'生田神社（神戶總鎮守）',n:'三宮市中心・平緩',nav:'生田神社'},
+      {t:'12:00',a:'🥩 午餐：モーリヤ 本店（神戶牛鐵板燒）',n:'1885 創業・你的高級鐵板燒・務必訂位・27 吧台席・可刷卡/電子錢包/QR',nav:'モーリヤ 本店 神戸'},
+      {t:'14:00',a:'南京町中華街（邊走邊吃）',n:'平坦・熱鬧',nav:'南京町'},
+      {t:'15:00',a:'美利堅公園・神戶港塔（海港景色）',n:'平坦放鬆・港塔展望約 ¥1,200',nav:'メリケンパーク'},
+      {t:'16:30',a:'阪神 神戸三宮 → 大阪難波',n:'約 43 分・¥410'},
+      {t:'19:00',a:'🥞 晚餐：お好み焼「美津の」道頓堀',n:'大阪燒名店・米其林必比登・現金或滿¥3,000可刷卡',nav:'お好み焼 美津の'},
+    ],
+    rain:['🏙️ 南京町半有頂棚、舊居留地撐傘可走','🍞 港灣改室內「神戶麵包超人博物館／MOSAIC 商場」','🥩 神戶牛午餐不受影響'] },
+
+  { id:5, emoji:'🧳', date:'10/12 (一)', title:'回程日', tag:'體育之日假日・搭 ラピート',
+    sunny:[
+      {t:'9:00',a:'飯店早餐、整理行李'},
+      {t:'10:00',a:'最後採買（藥妝 10:00 開）',n:'心齋橋走路即到・補貨伴手禮',nav:'心斎橋筋商店街'},
+      {t:'11:00',a:'退房、行李寄放櫃檯'},
+      {t:'12:00',a:'🍣 午餐：がんこ壽司 道頓堀店',n:'假日有開・可刷卡・和食/壽司/天婦羅・家庭友善（美々卯本店假日休，改此）',nav:'がんこ 道頓堀店'},
+      {t:'15:15',a:'領行李 → 走到南海なんば站',n:'步行約 12 分',nav:'南海なんば駅'},
+      {t:'15:35',a:'（假日班表）南海なんば → ラピートβ29号 → 關西空港',n:'16:00 発 → 關空 16:41・約 37 分・¥1,490／人（提早可搭 15:05→15:41）'},
+      {t:'16:41',a:'抵達關西空港 T1',n:''},
+      {t:'16:50',a:'虎航櫃檯報到',n:'起飛前約 3 小時・虎航約起飛前 60 分關櫃'},
+      {t:'19:50',a:'起飛回台北 🛫'},
+    ],
+    rain:{note:'☔ 上午商店街有頂棚、機場全室內，回程日下雨照常。'} },
+];
+
+/* ============ 名店訂位 & 付款 ============ */
+const rest = [
+  {d:'D0宵夜',name:'金龍拉麵 道頓堀店',book:'不可（食券機）',pay:'現金',note:'24 小時・拉麵¥600・免訂快吃',nav:'金龍ラーメン 道頓堀店',url:'https://tabelog.com/osaka/A2701/A270202/27001495/'},
+  {d:'D1午',name:'太政 千日前本店（河豚）',book:'可（電話）',pay:'現金為主',note:'浜藤已閉店改此；1948 創業河豚老舖，近黑門市場。也可在黑門市場內攤店吃河豚',nav:'黒門市場',url:'https://tabelog.com/osaka/A2701/A270202/27000384/'},
+  {d:'D1晚',name:'はり重 道頓堀本店（壽喜燒）',book:'僅線上即時訂',pay:'卡',note:'V/M/JCB/AMEX/Diners・無電子錢包/QR・週二休・200席有個室',nav:'はり重 道頓堀',url:'https://tabelog.com/osaka/A2701/A270202/27001250/'},
+  {d:'D2午',name:'奧丹清水（京都・湯豆腐）',book:'僅電話（建議）',pay:'現金',note:'⚠️只收現金・週四休・庭園榻榻米・1635 創業',nav:'総本家 ゆどうふ 奥丹清水',url:'https://tabelog.com/kyoto/A2601/A260301/26001625/'},
+  {d:'D2茶',name:'茶寮都路里 祇園本店',book:'不可（排隊）',pay:'卡',note:'抹茶聖代約¥1,400・60 席',nav:'茶寮都路里 祇園本店',url:'https://tabelog.com/kyoto/A2601/A260301/26000408/'},
+  {d:'D2晚',name:'道頓堀 今井本店（うどんすき）',book:'可（套餐前一天訂）',pay:'卡・電',note:'卡含銀聯＋電子錢包・無QR・週三休・138席/個室/掘りごたつ・輪椅友善',nav:'道頓堀 今井本店',url:'https://tabelog.com/osaka/A2701/A270202/27001289/'},
+  {d:'D3午',name:'北極星 心齋橋本店（蛋包飯）',book:'現場抽號',pay:'現金',note:'現金為主・榻榻米・1922 創業・¥1,080起',nav:'北極星 心斎橋本店',url:'https://tabelog.com/osaka/A2701/A270202/27001274/'},
+  {d:'D3晚',name:'焼肉ふたご 道頓堀店',book:'建議線上/電話',pay:'卡・QR',note:'五大卡＋QR(PayPay等)・無電子錢包・17:00開・35席・¥5-6千',nav:'大阪焼肉ホルモン ふたご 道頓堀店',url:'https://tabelog.com/osaka/A2701/A270202/27139498/'},
+  {d:'D4午',name:'モーリヤ 本店（神戶牛鐵板燒）',book:'務必訂位',pay:'卡・電・QR',note:'電話/官網・全年無休・27吧台席無個室・¥1-2萬・遲到15分視同取消',nav:'モーリヤ 本店 神戸',url:'https://tabelog.com/hyogo/A2801/A280101/28000615/'},
+  {d:'D4晚',name:'美津の（道頓堀・大阪燒）',book:'現場排隊',pay:'現金＋卡',note:'滿¥3,000才可刷卡・米其林必比登・Tabelog 100',nav:'お好み焼 美津の',url:'https://tabelog.com/osaka/A2701/A270202/27001278/'},
+  {d:'D5午',name:'がんこ壽司 道頓堀店',book:'可（建議）',pay:'卡',note:'假日有開・和食/壽司/天婦羅・家庭友善',nav:'がんこ 道頓堀店',url:'https://tabelog.com/osaka/A2701/A270202/27001528/'},
+];
+
+/* ============ 渲染 ============ */
+const navUrl = q => 'https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent(q);
+const rowHtml = r => `<li class="tl-row"><span class="tl-time">${r.t}</span>
+  <div class="tl-body"><div class="tl-act">${r.a}</div>${r.n?`<div class="tl-note">${r.n}</div>`:''}
+  ${r.nav?`<a class="nav" href="${navUrl(r.nav)}" target="_blank" rel="noopener">📍 ${r.nav}</a>`:''}</div></li>`;
+const rainHtml = rain => Array.isArray(rain)
+  ? `<div class="rain-head">☔ 雨天備案</div><ul style="list-style:none">${rain.map(x=>`<li class="rain-item">${x}</li>`).join('')}</ul>`
+  : `<div class="rain-head">☔ 雨天備案</div><div class="rain-note">${rain.note}</div>`;
+
+const daysEl = document.getElementById('days');
+days.forEach(d=>{
+  const sec = document.createElement('section');
+  sec.className = 'day reveal';
+  sec.dataset.day = d.id;
+  sec.innerHTML = `
+    <div class="day-head">
+      <div class="day-badge"><small>Day</small><b>${d.id}</b></div>
+      <div><div class="day-title">${d.emoji} ${d.date}・${d.title}</div><span class="day-tag">${d.tag}</span></div>
+    </div>
+    <div class="plan plan-sunny"><ul class="timeline reveal stagger">${d.sunny.map(rowHtml).join('')}</ul></div>
+    <div class="plan plan-rain">${rainHtml(d.rain)}</div>`;
+  daysEl.appendChild(sec);
+});
+
+const rEl = document.getElementById('rlist');
+rEl.innerHTML = rest.map(r=>`<div class="rrow">
+  <div class="rd">${r.d}</div>
+  <div><a class="rname rlink" href="${r.url}" target="_blank" rel="noopener" title="在 Tabelog 開啟店家詳情">${r.name}<span class="arr">Tabelog ↗</span></a></div>
+  <div class="rmeta">
+    <span class="tagp tp-book">🗓️ ${r.book}</span>
+    <span class="tagp ${r.pay.includes('現金')&&!r.pay.includes('卡')?'tp-cash':'tp-card'}">💴 ${r.pay}</span>
+    <a class="nav" href="${navUrl(r.nav)}" target="_blank" rel="noopener">📍 導航</a>
+  </div>
+  <div class="rnote">${r.note}</div>
+</div>`).join('');
+
+/* ============ 進場動畫 ============ */
+document.querySelectorAll('.stagger').forEach(s=>{[...s.children].forEach((c,i)=>c.style.setProperty('--i',i));});
+const io = new IntersectionObserver((e)=>{e.forEach(x=>{if(x.isIntersecting){x.target.classList.add('in');io.unobserve(x.target);}});},{threshold:.12,rootMargin:'0px 0px -8% 0px'});
+document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
+
+/* ============ 滾動：進度條 + 火車 + 視差 + 背景過場 ============ */
+const progress=document.getElementById('progress'), train=document.getElementById('train');
+const decos=document.querySelectorAll('[data-speed]');
+const bgLayers=[...document.querySelectorAll('.bg-layer')];
+const dayEls=()=>[...document.querySelectorAll('.day')];
+let ticking=false, dEls=[];
+function cacheDays(){dEls=dayEls();}
+function onScroll(){
+  const st=window.scrollY, h=document.documentElement.scrollHeight-window.innerHeight;
+  const pct=h>0?Math.min(st/h,1):0;
+  progress.style.width=(pct*100)+'%'; train.style.left=(pct*100)+'%';
+  decos.forEach(el=>{const sp=parseFloat(el.dataset.speed)||0.3; el.style.transform=`translateY(${st*sp*-0.15}px)`;});
+  // 背景 cross-fade：以視窗中心落在哪一天決定
+  if(dEls.length){
+    const y=st+window.innerHeight/2;
+    let idx=0; for(let i=0;i<dEls.length;i++){ if(y>=dEls[i].offsetTop) idx=i; }
+    let op=new Array(bgLayers.length).fill(0);
+    if(y<dEls[0].offsetTop){ op[0]=1; }
+    else{
+      const curTop=dEls[idx].offsetTop;
+      const nextTop=idx+1<dEls.length?dEls[idx+1].offsetTop:document.documentElement.scrollHeight;
+      const frac=Math.min(Math.max((y-curTop)/(nextTop-curTop),0),1);
+      op[idx]=1-frac; if(idx+1<bgLayers.length) op[idx+1]=frac; else op[idx]=1;
+    }
+    bgLayers.forEach((L,i)=>L.style.opacity=op[i]);
+  }
+  ticking=false;
+}
+window.addEventListener('scroll',()=>{if(!ticking){requestAnimationFrame(onScroll);ticking=true;}},{passive:true});
+window.addEventListener('resize',()=>{cacheDays();onScroll();});
+window.addEventListener('load',()=>{cacheDays();onScroll();});
+cacheDays(); onScroll();
+
+/* ============ 晴 / 雨 切換 ============ */
+document.getElementById('modeToggle').addEventListener('click',e=>{
+  const btn=e.target.closest('.mode-btn'); if(!btn)return;
+  document.querySelectorAll('.mode-btn').forEach(b=>b.classList.remove('active')); btn.classList.add('active');
+  document.body.classList.toggle('rain',btn.dataset.mode==='rain');
+  setTimeout(()=>{cacheDays();onScroll();},60);
+});
+
+/* ============ 視圖切換（行程／翻譯／搭車，同頁不開新分頁）============ */
+const views=document.querySelectorAll('.view'), vnav=document.getElementById('viewnav');
+function switchView(name){
+  views.forEach(v=>v.classList.toggle('active', v.id==='view-'+name));
+  vnav.querySelectorAll('button').forEach(b=>b.classList.toggle('active', b.dataset.view===name));
+  document.body.dataset.view=name;
+  window.scrollTo(0,0);
+  if(name==='trip'){ cacheDays(); onScroll(); }   // 回行程時重算背景過場
+}
+vnav.addEventListener('click', e=>{ const b=e.target.closest('button'); if(b) switchView(b.dataset.view); });
+document.body.dataset.view='trip';
+
+/* ============ PWA：註冊 Service Worker（離線可用）============ */
+if('serviceWorker' in navigator){ window.addEventListener('load',()=>navigator.serviceWorker.register('sw.js').catch(()=>{})); }
+
+</script>
+</body>
+</html>

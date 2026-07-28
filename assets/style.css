@@ -1,0 +1,186 @@
+/* ============================================================
+   大阪 6 日 5 夜導覽網站 — 共用樣式
+   手機優先、長輩易讀（大字、高對比）、可折疊、離線友善
+   ============================================================ */
+
+:root{
+  --bg:#fbf5ea; --bg-soft:#f3ead9;
+  --ink:#2f2621; --muted:#7d6f63;
+  --primary:#e0603a; --primary-d:#c74a2b;
+  --accent:#e8a53a; --teal:#2f8f7f; --teal-d:#237567;
+  --card:#ffffff; --line:#ece0cf;
+  --ok:#2f8f7f; --warn:#d98a20; --rain:#3f7fb0;
+  --r-sm:14px; --r:20px; --r-lg:28px; --pill:999px;
+  --sh-1:0 6px 18px rgba(90,60,40,.10);
+  --sh-2:0 16px 40px rgba(90,60,40,.18);
+  --ease:cubic-bezier(.22,1,.36,1);
+  --maxw:820px;
+  /* 長輩版基準字級：偏大 */
+  --fs-base:18px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
+body{
+  font-family:system-ui,-apple-system,"Hiragino Sans","PingFang TC","Noto Sans TC","Microsoft JhengHei",sans-serif;
+  color:var(--ink); line-height:1.75; background:var(--bg);
+  font-size:var(--fs-base);
+  overflow-x:hidden; -webkit-font-smoothing:antialiased;
+}
+img{max-width:100%;display:block}
+a{color:var(--primary-d);text-underline-offset:3px}
+
+/* 大字模式（body.big） */
+body.big{--fs-base:21px}
+
+.wrap{max-width:var(--maxw);margin:0 auto;padding:0 16px;position:relative;z-index:1}
+
+/* ---------- 頂部列 ---------- */
+.topbar{position:sticky;top:0;z-index:60;background:rgba(251,245,234,.92);
+  backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+.topbar-in{max-width:var(--maxw);margin:0 auto;padding:8px 14px;
+  display:flex;align-items:center;gap:10px}
+.brand{font-weight:800;font-size:16px;color:var(--primary-d);white-space:nowrap;
+  text-decoration:none;letter-spacing:.3px}
+.brand b{color:var(--ink)}
+.topbar .spacer{flex:1}
+.icon-btn{border:1px solid var(--line);background:#fff;border-radius:var(--pill);
+  padding:7px 12px;font-size:14px;font-weight:700;color:var(--ink);cursor:pointer;
+  display:inline-flex;align-items:center;gap:5px;text-decoration:none}
+.icon-btn:active{transform:scale(.96)}
+
+/* 日別分頁導覽（橫向捲動） */
+.daynav{position:sticky;top:49px;z-index:55;background:rgba(251,245,234,.92);
+  backdrop-filter:blur(8px);border-bottom:1px solid var(--line);
+  overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none}
+.daynav::-webkit-scrollbar{display:none}
+.daynav-in{display:flex;gap:8px;padding:10px 14px;max-width:var(--maxw);margin:0 auto;width:max-content}
+.daynav a{flex:0 0 auto;text-decoration:none;font-weight:700;font-size:14px;
+  color:var(--muted);background:#fff;border:1px solid var(--line);
+  padding:7px 13px;border-radius:var(--pill);white-space:nowrap}
+.daynav a.active{color:#fff;background:var(--primary);border-color:var(--primary)}
+
+/* ---------- Hero ---------- */
+.hero{position:relative;padding:38px 0 30px;text-align:center}
+.hero h1{font-size:clamp(28px,7vw,44px);line-height:1.2;letter-spacing:.5px}
+.hero .sub{color:var(--muted);margin-top:10px;font-size:16px}
+.hero .chips{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin-top:16px}
+.chip{background:#fff;border:1px solid var(--line);border-radius:var(--pill);
+  padding:6px 13px;font-size:13px;font-weight:700;color:var(--ink);box-shadow:var(--sh-1)}
+.chip.p{color:#fff;background:var(--primary);border-color:var(--primary)}
+
+/* ---------- 通用卡片/區塊 ---------- */
+section.block{padding:26px 0}
+.sec-tag{display:inline-block;font-size:13px;font-weight:800;color:var(--primary-d);
+  background:#fff;padding:4px 12px;border-radius:var(--pill);margin-bottom:10px;box-shadow:var(--sh-1)}
+h2{font-size:clamp(22px,5vw,30px);letter-spacing:.5px;margin-bottom:4px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--r);
+  box-shadow:var(--sh-1);padding:16px;margin:12px 0}
+
+/* 日別卡（首頁） */
+.daycard{display:block;text-decoration:none;color:inherit;background:var(--card);
+  border:1px solid var(--line);border-radius:var(--r-lg);overflow:hidden;
+  box-shadow:var(--sh-1);margin:14px 0;transition:transform .2s var(--ease),box-shadow .2s}
+.daycard:active{transform:scale(.99)}
+.daycard .ph{height:120px;background-size:cover;background-position:center;position:relative}
+.daycard .ph::after{content:"";position:absolute;inset:0;
+  background:linear-gradient(180deg,rgba(0,0,0,0) 40%,rgba(0,0,0,.45))}
+.daycard .ph .lab{position:absolute;left:14px;bottom:10px;color:#fff;z-index:1;
+  font-weight:800;font-size:20px;text-shadow:0 2px 8px rgba(0,0,0,.5)}
+.daycard .body{padding:12px 15px}
+.daycard .date{color:var(--primary-d);font-weight:800;font-size:14px}
+.daycard .title{font-size:19px;font-weight:800;margin:2px 0 6px}
+.daycard .meta{color:var(--muted);font-size:14px}
+.daycard .tags{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+.tag{font-size:12px;font-weight:700;padding:3px 9px;border-radius:var(--pill);
+  background:var(--bg-soft);color:var(--ink)}
+.tag.food{background:#fbe6d8;color:var(--primary-d)}
+.tag.rain{background:#e0eef7;color:var(--rain)}
+
+/* ---------- 時間軸行程項（可折疊） ---------- */
+.timeline{position:relative;margin:8px 0}
+.stop{background:var(--card);border:1px solid var(--line);border-radius:var(--r);
+  box-shadow:var(--sh-1);margin:12px 0;overflow:hidden}
+.stop > summary{list-style:none;cursor:pointer;padding:14px 16px;
+  display:flex;gap:12px;align-items:flex-start;position:relative}
+.stop > summary::-webkit-details-marker{display:none}
+.stop .time{flex:0 0 auto;font-weight:800;color:var(--primary-d);font-size:15px;
+  min-width:52px;line-height:1.4}
+.stop .head-main{flex:1;min-width:0}
+.stop .name{font-size:18px;font-weight:800;line-height:1.35}
+.stop .jp{color:var(--muted);font-size:13px;font-weight:600}
+.stop .quick{color:var(--muted);font-size:13px;margin-top:3px}
+.stop .chev{flex:0 0 auto;color:var(--muted);transition:transform .25s var(--ease);font-size:18px}
+.stop[open] .chev{transform:rotate(180deg)}
+.stop .detail{padding:0 16px 16px;border-top:1px dashed var(--line);margin-top:2px}
+.stop .detail-in{padding-top:12px}
+
+/* 資訊列 */
+.info{display:flex;gap:8px;margin:7px 0;font-size:15px;align-items:flex-start}
+.info .k{flex:0 0 auto;font-weight:800;color:var(--ink);min-width:66px}
+.info .v{flex:1;min-width:0}
+.badge{display:inline-block;font-size:12px;font-weight:800;padding:2px 9px;
+  border-radius:var(--pill);vertical-align:middle}
+.badge.stay{background:var(--bg-soft);color:var(--ink)}
+.badge.dur{background:#e6f2ef;color:var(--teal-d)}
+
+/* 交通段 */
+.trans{background:var(--bg-soft);border-radius:var(--r-sm);padding:10px 12px;margin:8px 0;font-size:14px}
+.trans .t-title{font-weight:800;color:var(--teal-d);font-size:13px;margin-bottom:4px;
+  display:flex;align-items:center;gap:6px}
+.trans .line{display:inline-block;font-weight:800;color:#fff;background:var(--teal);
+  border-radius:6px;padding:1px 7px;font-size:12px;margin-right:4px}
+
+/* 雨天備案 */
+.rain-box{background:#eaf3fa;border:1px solid #cfe4f2;border-radius:var(--r-sm);
+  padding:10px 12px;margin:8px 0;font-size:14px;color:#2b5e80}
+.rain-box b{color:var(--rain)}
+
+/* 餐廳卡 */
+.meal{border-left:4px solid var(--accent);background:#fffdf8;border-radius:var(--r-sm);
+  padding:11px 13px;margin:8px 0;font-size:15px}
+.meal .m-type{font-weight:800;color:var(--primary-d);font-size:13px}
+.meal .m-name{font-weight:800;font-size:16px;margin:1px 0}
+.meal .m-jp{color:var(--muted);font-size:13px}
+.meal .m-row{color:var(--muted);font-size:14px;margin-top:3px}
+
+/* 地圖/導航按鈕 */
+.map-btn{display:inline-flex;align-items:center;gap:6px;text-decoration:none;
+  background:var(--primary);color:#fff;font-weight:800;font-size:14px;
+  padding:8px 14px;border-radius:var(--pill);margin-top:8px;box-shadow:var(--sh-1)}
+.map-btn:active{transform:scale(.97)}
+.src{font-size:12px;color:var(--muted)}
+.src a{color:var(--teal-d)}
+
+/* 四類餐飲對照表 */
+.matrix{width:100%;border-collapse:collapse;font-size:15px;overflow:hidden;
+  border-radius:var(--r-sm);box-shadow:var(--sh-1)}
+.matrix th,.matrix td{padding:10px 12px;text-align:left;border-bottom:1px solid var(--line);background:#fff}
+.matrix th{background:var(--primary);color:#fff;font-size:14px}
+.matrix td .d{font-weight:800;color:var(--primary-d)}
+
+/* 待確認清單 */
+.todo{background:#fff8ee;border:1px solid #f0dcb8;border-radius:var(--r);padding:14px 16px}
+.todo h3{color:var(--warn);font-size:18px;margin-bottom:8px}
+.todo li{margin:8px 0 8px 18px;font-size:15px}
+
+/* 提示條 */
+.note{background:#eef6f3;border:1px solid #cfe6df;border-radius:var(--r-sm);
+  padding:10px 13px;font-size:14px;color:var(--teal-d);margin:10px 0}
+.note.warn{background:#fff4e6;border-color:#f0d9b0;color:#9a6a15}
+
+/* 頁尾 */
+footer{padding:30px 0 60px;text-align:center;color:var(--muted);font-size:13px}
+footer .backtop{margin-bottom:14px}
+
+/* 展開/收合全部 */
+.bulk{display:flex;gap:8px;margin:6px 0 2px}
+.bulk button{flex:1;border:1px solid var(--line);background:#fff;border-radius:var(--pill);
+  padding:9px;font-size:14px;font-weight:700;color:var(--ink);cursor:pointer}
+.bulk button:active{transform:scale(.98)}
+
+/* 桌機微調 */
+@media(min-width:720px){
+  .hero{padding:56px 0 40px}
+  .daycard .ph{height:150px}
+}
+@media(prefers-reduced-motion:reduce){*{transition:none!important;scroll-behavior:auto!important}}
