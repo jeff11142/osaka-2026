@@ -1,6 +1,6 @@
 // Service Worker：讓網站可離線使用（行程/交通/餐廳/背景照全快取）
 // 關鍵資訊都寫在各 HTML 內，離線也不會整頁失效
-const CACHE = 'osaka-trip-v2';
+const CACHE = 'osaka-trip-v3';
 const ASSETS = [
   './', './index.html',
   './day1.html', './day2.html', './day3.html',
