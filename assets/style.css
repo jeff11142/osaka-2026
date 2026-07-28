@@ -95,6 +95,12 @@ h2{font-size:clamp(22px,5vw,30px);letter-spacing:.5px;margin-bottom:4px}
   background:var(--bg-soft);color:var(--ink)}
 .tag.food{background:#fbe6d8;color:var(--primary-d)}
 .tag.rain{background:#e0eef7;color:var(--rain)}
+.tag.cn{background:#e6f2ef;color:var(--teal-d)}
+
+/* 中文友善標記 */
+.cn{display:inline-block;font-size:12px;font-weight:800;padding:2px 9px;border-radius:var(--pill);
+  background:#e6f2ef;color:var(--teal-d);border:1px solid #cfe6df;vertical-align:middle;margin-left:4px}
+.meal .cn{margin-left:0;margin-top:4px}
 
 /* ---------- 時間軸行程項（可折疊） ---------- */
 .timeline{position:relative;margin:8px 0}
