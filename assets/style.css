@@ -141,6 +141,16 @@ h2{font-size:clamp(22px,5vw,30px);letter-spacing:.5px;margin-bottom:4px}
   padding:10px 12px;margin:8px 0;font-size:14px;color:#2b5e80}
 .rain-box b{color:var(--rain)}
 
+/* 已訂位確認框 */
+.booked{background:#e9f5f1;border:1px solid #bfe3d8;border-left:4px solid var(--ok);
+  border-radius:var(--r-sm);padding:10px 13px;margin:8px 0;font-size:14px;color:#1f5f52;line-height:1.7}
+.booked .bk-h{font-weight:800;color:var(--teal-d);font-size:14px;display:block;margin-bottom:2px}
+.booked .bk-code{font-weight:800;letter-spacing:.5px;background:#fff;border:1px solid #bfe3d8;
+  border-radius:8px;padding:1px 7px}
+/* 已訂位小標籤（放 summary 快覽列） */
+.bk-tag{display:inline-block;background:var(--ok);color:#fff;font-weight:800;font-size:12px;
+  border-radius:var(--pill);padding:2px 9px;margin-left:6px;white-space:nowrap}
+
 /* 餐廳卡 */
 .meal{border-left:4px solid var(--accent);background:#fffdf8;border-radius:var(--r-sm);
   padding:11px 13px;margin:8px 0;font-size:15px}
