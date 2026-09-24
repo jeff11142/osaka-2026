@@ -135,6 +135,16 @@ h2{font-size:clamp(22px,5vw,30px);letter-spacing:.5px;margin-bottom:4px}
   display:flex;align-items:center;gap:6px}
 .trans .line{display:inline-block;font-weight:800;color:#fff;background:var(--teal);
   border-radius:6px;padding:1px 7px;font-size:12px;margin-right:4px}
+/* 各路線官方代表色（大阪地鐵為官方色；私鐵/JR 為品牌色）*/
+.trans .line.l-midosuji{background:#e5171f}    /* 御堂筋線・紅 M */
+.trans .line.l-sakaisuji{background:#814721}   /* 堺筋線・棕 K */
+.trans .line.l-sennichimae{background:#e44d93} /* 千日前線・桃紅 S */
+.trans .line.l-chuo{background:#019a66}        /* 中央線・綠 C */
+.trans .line.l-nagahori{background:#7a9e2e}    /* 長堀鶴見綠地線・黃綠 N */
+.trans .line.l-kobe-kaigan{background:#1e5c9e} /* 神戶海岸線・藍 */
+.trans .line.l-jr{background:#0072bc}          /* JR 西日本・藍 */
+.trans .line.l-nankai{background:#e8730f}      /* 南海電鐵・橘 */
+.trans .line.l-hankyu{background:#7a2e36}      /* 阪急・栗紅 maroon */
 
 /* 雨天備案 */
 .rain-box{background:#eaf3fa;border:1px solid #cfe4f2;border-radius:var(--r-sm);
